@@ -17,9 +17,15 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
+    protected $table = 'users';
+
     protected $fillable = [
-        'name',
+        'nombres',
+        'apellidos',
+        'teléfono',
+        'rol_id',
         'email',
+        'foto',
         'password',
     ];
 
@@ -42,4 +48,22 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class, 'rol_id');
+    }
+
+    //Reservas como cliente
+    public function reservationsAsClient()
+    {
+        return $this->hasMany(Reservation::class, 'user_id');
+    }
+
+    //Reservas como consultor
+    public function reservationsAsConsultant()
+    {
+        return $this->hasMany(Reservation::class, 'consultant_id');
+    }
+
 }
