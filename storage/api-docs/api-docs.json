@@ -139,6 +139,212 @@
                 ]
             }
         },
+        "/my-reservations": {
+            "get": {
+                "tags": [
+                    "Cliente"
+                ],
+                "summary": "Listar reservas del cliente autenticado",
+                "operationId": "8a655c9fb4e5cb246d3d5426512f5227",
+                "parameters": [
+                    {
+                        "name": "date",
+                        "in": "query",
+                        "description": "Filtrar por fecha YYYY-MM-DD",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "2024-10-23"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Reservas obtenidas correctamente"
+                    },
+                    "403": {
+                        "description": "No autorizado"
+                    },
+                    "401": {
+                        "description": "No autenticado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/my-payments": {
+            "get": {
+                "tags": [
+                    "Cliente"
+                ],
+                "summary": "Listar historial de pagos del cliente autenticado",
+                "operationId": "bd58a8ff282cbccbeababcfb7315a058",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Número de página",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Pagos obtenidos correctamente"
+                    },
+                    "403": {
+                        "description": "No autorizado"
+                    },
+                    "401": {
+                        "description": "No autenticado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/my-profile": {
+            "get": {
+                "tags": [
+                    "Cliente"
+                ],
+                "summary": "Obtener perfil del usuario autenticado",
+                "operationId": "4c9dcef54964608291ca31318d8b1465",
+                "responses": {
+                    "200": {
+                        "description": "Perfil obtenido correctamente"
+                    },
+                    "401": {
+                        "description": "No autenticado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Cliente"
+                ],
+                "summary": "Actualizar perfil del usuario autenticado",
+                "operationId": "fb9008a9517a44a3f8673a243521dce5",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nombres",
+                                    "apellidos",
+                                    "telefono"
+                                ],
+                                "properties": {
+                                    "nombres": {
+                                        "type": "string",
+                                        "example": "Juan"
+                                    },
+                                    "apellidos": {
+                                        "type": "string",
+                                        "example": "Perez"
+                                    },
+                                    "telefono": {
+                                        "type": "string",
+                                        "example": "987654321"
+                                    },
+                                    "foto": {
+                                        "type": "string",
+                                        "example": "avatar.jpg"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Perfil actualizado correctamente"
+                    },
+                    "422": {
+                        "description": "Error de validación"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/change-password": {
+            "put": {
+                "tags": [
+                    "Cliente"
+                ],
+                "summary": "Cambiar contraseña del usuario autenticado",
+                "operationId": "8e7f19e26fcc6d8a3f40bc27f40b4c38",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "current_password",
+                                    "new_password",
+                                    "new_password_confirmation"
+                                ],
+                                "properties": {
+                                    "current_password": {
+                                        "type": "string",
+                                        "example": "12345678"
+                                    },
+                                    "new_password": {
+                                        "type": "string",
+                                        "example": "newPassword123"
+                                    },
+                                    "new_password_confirmation": {
+                                        "type": "string",
+                                        "example": "newPassword123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Contraseña actualizada correctamente"
+                    },
+                    "422": {
+                        "description": "Error de validación"
+                    },
+                    "400": {
+                        "description": "La contraseña actual es incorrecta"
+                    },
+                    "401": {
+                        "description": "No autenticado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/consultants": {
             "get": {
                 "tags": [
@@ -414,6 +620,66 @@
                     }
                 ]
             }
+        },
+        "/paypal/create-order": {
+            "post": {
+                "tags": [
+                    "Pagos"
+                ],
+                "summary": "Crear orden de pago en PayPal",
+                "operationId": "1db8df34e6bf9c05d240a4942c8a2762",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "consultant_id",
+                                    "date",
+                                    "hours"
+                                ],
+                                "properties": {
+                                    "consultant_id": {
+                                        "type": "integer",
+                                        "example": 5
+                                    },
+                                    "date": {
+                                        "type": "string",
+                                        "example": "2024-10-23"
+                                    },
+                                    "hours": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string",
+                                            "example": "10:00"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Orden de PayPal creada correctamente"
+                    },
+                    "400": {
+                        "description": "Horario no disponible o datos inválidos"
+                    },
+                    "403": {
+                        "description": "No autorizado"
+                    },
+                    "422": {
+                        "description": "Error de validación"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
         }
     },
     "components": {
@@ -434,6 +700,14 @@
         {
             "name": "Autenticación",
             "description": "Autenticación"
+        },
+        {
+            "name": "Cliente",
+            "description": "Cliente"
+        },
+        {
+            "name": "Pagos",
+            "description": "Pagos"
         }
     ]
 }
